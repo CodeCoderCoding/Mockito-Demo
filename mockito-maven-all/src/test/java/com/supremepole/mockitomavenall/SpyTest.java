@@ -1,6 +1,7 @@
 package com.supremepole.mockitomavenall;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
@@ -31,13 +32,25 @@ public class SpyTest {
     @Test
     public void spyWhenTest() {
         Calculator calculator=spy(new Calculator());
-        //默认走真实方法
+        //对于spy方法，默认走真实方法
         assertEquals(3, calculator.add(1, 2));
         //打桩之后，走打桩方法
         when(calculator.add(1,2)).thenReturn(10);
         assertEquals(10, calculator.add(1, 2));
-        //与打桩参数不匹配，走真实方法
+        //与打桩参数值不匹配，走真实方法
         assertEquals(3, calculator.add(2, 1));
+    }
+
+    @Test
+    public void spyVSMockTest(){
+        Calculator calculator= Mockito.mock(Calculator.class);
+        //对于mock方法，默认走mock对象方法，因为没对其行为进行定义，mock对象方法的返回值为返回类型的默认值
+        assertEquals(0, calculator.add(1, 2));
+        //对其行为进行定义，即打桩，则走mock对象方法
+        when(calculator.add(1, 2)).thenReturn(10);
+        assertEquals(10, calculator.add(1, 2));
+        //与打桩参数值不匹配，则相当于a=2,b=1的行为未定义，mock对象方法的返回值为返回类型的默认值
+        assertEquals(0, calculator.add(2, 1));
     }
 
 }
